@@ -1,0 +1,76 @@
+
+services:
+  postgres:
+    profiles:
+      - backing_service
+    image: postgres:13.5
+    container_name: bloomers_backend_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    env_file:
+      - ./development.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  redis:
+    container_name: bloomers_redis
+    profiles:
+      - backing_service
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    env_file:
+      - ./development.env
+
+  mailhog:
+    profiles:
+      - backing_service
+    image: mailhog/mailhog:latest
+    platform: linux/amd64
+    container_name: bloomers_mailhog
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MH_STORAGE: memory
+
+  backend:
+    profiles:
+      - backend
+    image: node:20-bullseye
+    working_dir: /app
+    container_name: bloomers_backend
+    volumes:
+      - .:/app
+      - /app/node_modules # Prevents overriding node modules inside container
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: development
+      REDIS_HOST: redis
+      EMAIL_HOST: mailhog
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/bloomers-backend-new
+    env_file:
+      - ./development.env
+    command: >
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm rebuild bcrypt &&
+             pnpm prisma:deploy &&
+             pnpm prisma:generate &&
+             pnpm prisma:seed:dev &&
+             pnpm nest start --watch"
+    depends_on:
+      - mailhog
+      - postgres
+      - redis
+
+
+volumes:
+  postgres:

@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int          @id @default(autoincrement())
+  email                String       @unique
+  role                 Role         @default(User)
+  password             String
+  passwordChangedAt    DateTime?
+  refreshToken         String?
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+  emailConfirmToken    String?
+  emailConfirmedAt     DateTime?
+  otp                  String?
+  otpExpires           DateTime?
+  otpConfirmed         Boolean      @default(false)
+  isConfirmedUser      Boolean      @default(false)
+  isDeleted            Boolean      @default(false)
+  isActive             Boolean      @default(true)
+  profile              UserProfile?
+
+  Account     Account[]
+  AccountInfo AccountInfo[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
+}
+
+model UserProfile {
+  id          Int     @id @default(autoincrement())
+  firstName   String?
+  lastName    String?
+  phoneNumber String?
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id               Int           @id @default(autoincrement())
+  currencyName     String
+  currencySymbol   String
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int
+  availableBalance Int
+  pendingBalance   Int
+  AccountInfo      AccountInfo[]
+}
+
+model AccountInfo {
+  id          Int     @id @default(autoincrement())
+  accountName String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId   Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id             Int               @id @default(autoincrement())
+  reference      String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  fromCurrency   String
+  toCurrency     String
+  conversionRate Int
+  status         TransactionStatus @default(Pending)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum Role {
+  Admin
+  User
+}
+
+enum TransactionStatus {
+  Pending
+  Completed
+  Failed
+  Reversed
+}
