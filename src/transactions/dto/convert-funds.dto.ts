@@ -1,4 +1,9 @@
-import { IsNotEmpty, IsString, Validate } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { AccountExists } from '@common/validations/account-exists.validation';
 
 export class ConvertFundsDto {
@@ -11,5 +16,7 @@ export class ConvertFundsDto {
   @IsNotEmpty()
   @Validate(AccountExists)
   toAccountId: string;
-  amount: number;
+
+  @IsNumberString({})
+  amount: string;
 }

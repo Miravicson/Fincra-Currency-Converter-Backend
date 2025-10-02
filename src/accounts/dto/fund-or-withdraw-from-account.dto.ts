@@ -1,6 +1,6 @@
-import { IsPositive } from 'class-validator';
+import { IsNumberString } from 'class-validator';
 
 export class FundOrWithdrawFromAccountDto {
-  @IsPositive()
-  amount: number;
+  @IsNumberString()
+  amount: string;
 }

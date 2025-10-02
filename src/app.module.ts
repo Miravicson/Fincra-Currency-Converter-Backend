@@ -7,6 +7,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from '@common/response.interceptor';
 import { LoggerModule } from '@common/logger.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LoggerModule } from '@common/logger.module';
     UsersModule,
     AccountsModule,
     TransactionsModule,
+    DashboardModule,
   ],
   providers: [
     {

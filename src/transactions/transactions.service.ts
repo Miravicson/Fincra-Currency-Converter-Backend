@@ -8,19 +8,20 @@ import {
   BasicQueryFilterWithFilter,
   PrismaTransactionClient,
 } from '@common/types';
-import { DefaultArgs } from '@prisma/client/runtime/client';
+import { Decimal, DefaultArgs } from '@prisma/client/runtime/client';
 import { randomUUID } from 'crypto';
-import { ExchangeRateHostService } from '@common/integrations/exchange-rate-host.service';
+// import { ExchangeRateHostService } from '@common/integrations/exchange-rate-host.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { CreateTransaction } from '@/transactions/create-transaction.interface';
 import { AccountsService } from '@/accounts/accounts.service';
+import { ExchangeRateService } from '@common/integrations/exchange-rate/exchange-rate.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly exchangeRateHostService: ExchangeRateHostService,
+    private readonly exchangerService: ExchangeRateService,
     private readonly accountsService: AccountsService,
     @InjectQueue('transactions') private readonly transactionQueue: Queue,
   ) {}
@@ -32,7 +33,7 @@ export class TransactionsService {
     ]);
 
     return this.createForexTransaction({
-      amount: dto.amount,
+      amount: new Decimal(dto.amount),
       fromAccount: fromAccount,
       toAccount: toAccount,
       userId: userId,
@@ -80,7 +81,7 @@ export class TransactionsService {
     const { currencyCode: toCurrency, id: toAccountId } = options.toAccount;
     const amount = options.amount;
 
-    const conversionResult = await this.exchangeRateHostService.convert({
+    const conversionResult = await this.exchangerService.convert({
       amount: options.amount,
       fromCurrency,
       toCurrency,
@@ -102,7 +103,6 @@ export class TransactionsService {
       },
     });
 
-    // Step 2: Add to queue for processing
     await this.transactionQueue.add(
       'process-transaction',
       { transactionId: transaction.id },
@@ -137,7 +137,7 @@ export class TransactionsService {
             },
           });
 
-          if (fromAccount.availableBalance < 0) {
+          if (fromAccount.availableBalance.lt(0)) {
             throw new BadRequestException('Insufficient funds');
           }
 

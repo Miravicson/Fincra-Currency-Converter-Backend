@@ -3,6 +3,8 @@ import { Exclude, Type } from 'class-transformer';
 import { Account } from '@prisma/client';
 import { AccountInfoEntity } from '@/accounts/entities/account-info.entity';
 import { UserEntity } from '@/users/entities/user.entity';
+import { Decimal } from '@prisma/client/runtime/client';
+import { DecimalToString } from '@common/decorators/decimal-to-string.decorator';
 
 export class AccountEntity implements Account {
   constructor(data: Partial<AccountEntity> | null) {
@@ -25,8 +27,12 @@ export class AccountEntity implements Account {
   currencyName: string;
   currencySymbol: string;
   userId: number;
-  availableBalance: number;
-  pendingBalance: number;
+
+  @DecimalToString()
+  availableBalance: Decimal;
+
+  @DecimalToString()
+  pendingBalance: Decimal;
 
   @ApiProperty({
     required: false,

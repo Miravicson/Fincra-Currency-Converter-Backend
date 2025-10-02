@@ -1,0 +1,10 @@
+-- AlterTable
+ALTER TABLE "Account" ALTER COLUMN "availableBalance" SET DEFAULT 0,
+ALTER COLUMN "availableBalance" SET DATA TYPE DECIMAL(65,30),
+ALTER COLUMN "pendingBalance" SET DEFAULT 0,
+ALTER COLUMN "pendingBalance" SET DATA TYPE DECIMAL(65,30);
+
+-- AlterTable
+ALTER TABLE "Transaction" ALTER COLUMN "conversionRate" SET DATA TYPE DECIMAL(65,30),
+ALTER COLUMN "convertedAmount" SET DATA TYPE DECIMAL(65,30),
+ALTER COLUMN "originalAmount" SET DATA TYPE DECIMAL(65,30);

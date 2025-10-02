@@ -6,6 +6,7 @@ import {
 import { FundOrWithdrawFromAccountDto } from '@/accounts/dto/fund-or-withdraw-from-account.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { PrismaTransactionClient } from '@common/types';
+import { Decimal } from '@prisma/client/runtime/client';
 
 @Injectable()
 export class AccountsService {
@@ -44,9 +45,9 @@ export class AccountsService {
     dto: FundOrWithdrawFromAccountDto,
   ) {
     const { userId, accountId } = param;
-    const { amount } = dto;
+    const amount = new Decimal(dto.amount);
 
-    if (amount <= 0) {
+    if (amount.lte(0)) {
       throw new BadRequestException('Funding amount must be greater than 0');
     }
 
@@ -73,9 +74,9 @@ export class AccountsService {
     dto: FundOrWithdrawFromAccountDto,
   ) {
     const { userId, accountId } = param;
-    const { amount } = dto;
+    const amount = new Decimal(dto.amount);
 
-    if (amount <= 0) {
+    if (amount.lte(0)) {
       throw new BadRequestException('Withdrawal amount must be greater than 0');
     }
 
@@ -87,7 +88,7 @@ export class AccountsService {
       throw new NotFoundException(`Account ${accountId} not found`);
     }
 
-    if (account.availableBalance < amount) {
+    if (account.availableBalance.lt(amount)) {
       throw new BadRequestException(
         `Insufficient balance: Available ${account.availableBalance}, Requested ${amount}`,
       );

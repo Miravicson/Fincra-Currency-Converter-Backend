@@ -1,23 +1,14 @@
 import { Injectable } from '@nestjs/common';
-
-export interface ExchangeRateHostConvertOptions {
-  fromCurrency: string;
-  toCurrency: string;
-  amount: number;
-}
-export interface ExchangeRateHostConvertResponse {
-  fromCurrency: string;
-  toCurrency: string;
-  initialAmount: number;
-  convertedAmount: number;
-  exchangeRate: number;
-}
+import { Decimal } from '@prisma/client/runtime/client';
+import {
+  ExchangerInput,
+  ExchangerResponse,
+  ExchangerService,
+} from '@common/integrations/exchanger-service.interface';
 
 @Injectable()
-export class ExchangeRateHostService {
-  async convert(
-    options: ExchangeRateHostConvertOptions,
-  ): Promise<ExchangeRateHostConvertResponse> {
-    return {} as ExchangeRateHostConvertResponse;
+export class ExchangeRateHostService implements ExchangerService {
+  async convert(options: ExchangerInput): Promise<ExchangerResponse> {
+    throw new Error('Method not implemented.');
   }
 }

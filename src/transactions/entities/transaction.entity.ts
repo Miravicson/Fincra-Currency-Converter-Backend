@@ -2,6 +2,8 @@ import { BaseEntity } from '@common/entities/base.entity';
 import { $Enums, Transaction } from '@prisma/client';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger/index';
 import { Exclude } from 'class-transformer';
+import { Decimal } from '@prisma/client/runtime/client';
+import { DecimalToString } from '@common/decorators/decimal-to-string.decorator';
 
 export class TransactionEntity
   extends BaseEntity<TransactionEntity>
@@ -13,9 +15,16 @@ export class TransactionEntity
   reference: string;
   fromCurrency: string;
   toCurrency: string;
-  conversionRate: number;
-  originalAmount: number;
-  convertedAmount: number;
+
+  @DecimalToString()
+  conversionRate: Decimal;
+
+  @DecimalToString()
+  originalAmount: Decimal;
+
+  @DecimalToString()
+  convertedAmount: Decimal;
+
   fromAccountId: string;
   toAccountId: string;
 

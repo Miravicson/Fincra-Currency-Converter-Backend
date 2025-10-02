@@ -13,9 +13,9 @@ export class GetAllResourceDto<T> extends IntersectionType(DateRangeFilterDto) {
   @IsOptional()
   fields?: string;
 
-  @IsString()
-  @IsOptional()
-  sortBy?: keyof NonNullable<T>;
+  // @IsString()
+  // @IsOptional()
+  // sortBy?: keyof NonNullable<T>;
 
   @IsNumber()
   @IsOptional()

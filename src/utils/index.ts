@@ -10,6 +10,7 @@ import { DEFAULT_COUNTRY_CODE } from '@common/constant';
 import * as crypto from 'crypto';
 import * as fsPromises from 'fs/promises';
 import { ValidationError } from 'class-validator';
+import { Result } from '@/utils/types';
 
 import { Response } from 'express';
 
@@ -307,3 +308,20 @@ export function formatValidationErrors(
   }
   return formattedErrors;
 }
+
+export const tryCatch = <T, E = Error>(
+  arg: Promise<T> | (() => T),
+): Result<T, E> | Promise<Result<T, E>> => {
+  if (typeof arg === 'function') {
+    try {
+      const data = (arg as () => T)();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: error as E };
+    }
+  }
+
+  return (arg as Promise<T>)
+    .then((data) => ({ data, error: null }))
+    .catch((error) => ({ data: null, error: error as E }));
+};

@@ -60,8 +60,8 @@ model Account {
   currencySymbol   String
   user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int
-  availableBalance Int          @default(0)
-  pendingBalance   Int          @default(0)
+  availableBalance Decimal      @default(0)
+  pendingBalance   Decimal      @default(0)
   info             AccountInfo?
 
   // Back relations
@@ -91,9 +91,9 @@ model Transaction {
   userId          Int
   fromCurrency    String
   toCurrency      String
-  conversionRate  Int
-  originalAmount  Int
-  convertedAmount Int
+  conversionRate  Decimal
+  originalAmount  Decimal
+  convertedAmount Decimal
   status          TransactionStatus @default(Pending)
   fromAccount     Account           @relation("fromAccount", fields: [fromAccountId], references: [id])
   fromAccountId   String

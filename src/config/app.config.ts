@@ -23,4 +23,14 @@ export class AppConfig {
   @IsString()
   @Value('APP_HOST_NAME', { default: '0.0.0.0' })
   hostname: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Value('EXCHANGE_RATE_URL')
+  exchangeRateServiceBaseUrl: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Value('EXCHANGE_RATE_API_KEY')
+  exchangeRateServiceApiKey: string;
 }
