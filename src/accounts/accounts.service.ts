@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { FundOrWithdrawFromAccountDto } from '@/accounts/dto/fund-or-withdraw-from-account.dto';
 import { PrismaService } from '@/prisma/prisma.service';
+import { PrismaTransactionClient } from '@common/types';
 
 @Injectable()
 export class AccountsService {
@@ -126,21 +127,23 @@ export class AccountsService {
   }
 
   async createAccountsForUser(userId: number) {
-    return this.prisma.$transaction(async (tx) => {
-      // Check inside transaction to avoid race conditions
-      const alreadyCreatedAccounts = await tx.account.findMany({
-        where: { userId },
-      });
+    return this.prisma.$transaction(
+      async (prismaTx: PrismaTransactionClient) => {
+        // Check inside transaction to avoid race conditions
+        const alreadyCreatedAccounts = await prismaTx.account.findMany({
+          where: { userId },
+        });
 
-      if (alreadyCreatedAccounts.length > 0) {
-        return alreadyCreatedAccounts;
-      }
+        if (alreadyCreatedAccounts.length > 0) {
+          return alreadyCreatedAccounts;
+        }
 
-      const userAccounts = await tx.account.createManyAndReturn({
-        data: this.createAccountData(userId),
-      });
+        const userAccounts = await prismaTx.account.createManyAndReturn({
+          data: this.createAccountData(userId),
+        });
 
-      return userAccounts;
-    });
+        return userAccounts;
+      },
+    );
   }
 }

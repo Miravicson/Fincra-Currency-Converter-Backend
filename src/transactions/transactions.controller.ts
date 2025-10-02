@@ -3,9 +3,11 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import {
@@ -23,6 +25,7 @@ import { UserEntity } from '@/users/entities/user.entity';
 import { TransactionEntity } from '@/transactions/entities/transaction.entity';
 import { GetManyTransactionsDto } from '@/transactions/dto/get-many-transactions.dto';
 import { CustomApiResponse } from '@common/custom-api-response.decorator';
+import { TransactionRefParamDto } from '@common/dto/transaction-ref-param.dto';
 
 @ApiBearerAuth()
 @ApiTags('Transactions')
@@ -44,8 +47,25 @@ export class TransactionsController {
     return new TransactionEntity(result);
   }
 
+  @Get(':reference/requery')
+  @CustomApiResponse({ type: TransactionEntity })
+  @ApiBadRequestResponse({ type: ValidationErrorEntity })
+  @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
+  async requeryTransaction(
+    @CurrentUser() user: UserEntity,
+    @Param(new ValidationPipe({ transform: true }))
+    { reference }: TransactionRefParamDto,
+  ) {
+    const result = await this.transactionsService.requery(user.id, reference);
+    return new TransactionEntity(result);
+  }
+
   @Get('')
-  @CustomApiResponse({ type: TransactionEntity, isArray: true, paginated: true })
+  @CustomApiResponse({
+    type: TransactionEntity,
+    isArray: true,
+    paginated: true,
+  })
   async getManyTransactions(
     @Query() dto: GetManyTransactionsDto,
     @CurrentUser() user: UserEntity,

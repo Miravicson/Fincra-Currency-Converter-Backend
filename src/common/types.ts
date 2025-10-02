@@ -1,3 +1,6 @@
+import { DefaultArgs } from '@prisma/client/runtime/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+
 export type BasicQueryFilterKeys =
   | 'select'
   | 'include'
@@ -22,3 +25,8 @@ export type BasicQueryFilterWithFilter<Q extends BasicQueryFilter> = Omit<
 > & {
   where: NonNullable<Q['where']>;
 };
+
+export type PrismaTransactionClient = Omit<
+  PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
+>;

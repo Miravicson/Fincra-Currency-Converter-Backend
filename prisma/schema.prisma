@@ -64,6 +64,10 @@ model Account {
   pendingBalance   Int          @default(0)
   info             AccountInfo?
 
+  // Back relations
+  transactionsFrom Transaction[] @relation("fromAccount")
+  transactionsTo   Transaction[] @relation("toAccount")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -81,14 +85,20 @@ model AccountInfo {
 }
 
 model Transaction {
-  id             Int               @id @default(autoincrement())
-  reference      String
-  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         Int
-  fromCurrency   String
-  toCurrency     String
-  conversionRate Int
-  status         TransactionStatus @default(Pending)
+  id              Int               @id @default(autoincrement())
+  reference       String            @unique
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+  fromCurrency    String
+  toCurrency      String
+  conversionRate  Int
+  originalAmount  Int
+  convertedAmount Int
+  status          TransactionStatus @default(Pending)
+  fromAccount     Account           @relation("fromAccount", fields: [fromAccountId], references: [id])
+  fromAccountId   String
+  toAccount       Account           @relation("toAccount", fields: [toAccountId], references: [id])
+  toAccountId     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -106,6 +116,7 @@ enum Role {
 
 enum TransactionStatus {
   Pending
+  Processing
   Completed
   Failed
   Reversed

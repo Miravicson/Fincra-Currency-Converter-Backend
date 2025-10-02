@@ -8,6 +8,7 @@ import { RedisConfig } from '@/config/redis.config';
 import { UserEmailNotExists } from '@common/validations/user-email-not-exists.validation';
 import { LoggerModule } from 'nestjs-pino';
 import { AccountExists } from '@common/validations/account-exists.validation';
+import { ExchangeRateHostService } from '@common/integrations/exchange-rate-host.service';
 
 @Global()
 @Module({
@@ -30,7 +31,7 @@ import { AccountExists } from '@common/validations/account-exists.validation';
     ScheduleModule.forRoot(),
     LoggerModule,
   ],
-  providers: [UserEmailNotExists, AccountExists],
+  providers: [UserEmailNotExists, AccountExists, ExchangeRateHostService],
   exports: [
     PrismaModule,
     AuthModule,
@@ -38,6 +39,7 @@ import { AccountExists } from '@common/validations/account-exists.validation';
     UserEmailNotExists,
     AccountExists,
     LoggerModule,
+    ExchangeRateHostService,
   ],
 })
 export class CommonModule {}

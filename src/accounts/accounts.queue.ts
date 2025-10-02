@@ -11,13 +11,13 @@ export class AccountsQueue {
       'create-accounts',
       { userId },
       {
-        attempts: 5,            // retry up to 5 times
+        attempts: 5, // retry up to 5 times
         backoff: {
-          type: 'exponential',  // exponential backoff (1s, 2s, 4s…)
+          type: 'exponential', // exponential backoff (1s, 2s, 4s…)
           delay: 1000,
         },
         removeOnComplete: true,
-        removeOnFail: false,    // keep failed jobs for debugging
+        removeOnFail: false, // keep failed jobs for debugging
       },
     );
   }

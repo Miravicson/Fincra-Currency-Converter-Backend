@@ -14,6 +14,10 @@ export class TransactionEntity
   fromCurrency: string;
   toCurrency: string;
   conversionRate: number;
+  originalAmount: number;
+  convertedAmount: number;
+  fromAccountId: string;
+  toAccountId: string;
 
   @ApiProperty({
     enum: $Enums.TransactionStatus,
