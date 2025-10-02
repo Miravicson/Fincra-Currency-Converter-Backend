@@ -7,7 +7,7 @@ import {
   MaxLength,
   Validate,
 } from 'class-validator';
-import { UserEmailNotExists } from '@common/user-email-not-exists.validation';
+import { UserEmailNotExists } from '@common/validations/user-email-not-exists.validation';
 
 export class SignupDto {
   @IsEmail()
@@ -17,20 +17,20 @@ export class SignupDto {
   email: string;
 
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'MyStrongPassword@2' })
   @IsString()
   @IsStrongPassword()
   password: string;
 
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'Sean' })
   @IsString()
   @MaxLength(255)
   @IsOptional()
   firstName?: string;
 
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'King' })
   @IsString()
   @MaxLength(255)
   @IsOptional()

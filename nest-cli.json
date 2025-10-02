@@ -10,7 +10,8 @@
         "options": {
           "classValidatorShim": true,
           "introspectComments": true,
-          "autoResponses": false
+          "autoResponses": false,
+          "skipAutoHttpCode": true
         }
       }
     ]

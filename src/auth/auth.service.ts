@@ -32,6 +32,7 @@ import { CreateUserDto } from '@/users/dto/create-user.dto';
 import { CaslAbilityFactory } from '@/casl/casl-ability.factory';
 import { UserWithProfile } from '@/users/types';
 import { verify } from 'argon2';
+import { AccountsQueue } from '@/accounts/accounts.queue';
 
 @Injectable()
 export class AuthService {
@@ -43,6 +44,7 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly appConfig: AppConfig,
     private readonly caslAbilityFactory: CaslAbilityFactory,
+    private readonly accountsQueue: AccountsQueue,
   ) {}
 
   async verifyPasswordResetToken(token: string) {
@@ -308,6 +310,9 @@ export class AuthService {
       UserEntity.one({ ...user, profile: userProfile }),
     );
     await this.signIn({ user, response });
+
+
+    await this.accountsQueue.enqueueAccountCreation(user.id);
 
     return await this.getProfile(user.id);
   }

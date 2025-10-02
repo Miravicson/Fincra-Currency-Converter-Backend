@@ -54,14 +54,18 @@ model UserProfile {
 }
 
 model Account {
-  id               Int           @id @default(autoincrement())
+  id               String       @id @default(uuid())
   currencyName     String
+  currencyCode     String
   currencySymbol   String
-  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int
-  availableBalance Int
-  pendingBalance   Int
-  AccountInfo      AccountInfo[]
+  availableBalance Int          @default(0)
+  pendingBalance   Int          @default(0)
+  info             AccountInfo?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AccountInfo {
@@ -70,7 +74,7 @@ model AccountInfo {
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId   Int
+  accountId   String  @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

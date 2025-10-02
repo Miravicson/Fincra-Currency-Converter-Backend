@@ -5,8 +5,9 @@ import { BullModule } from '@nestjs/bull';
 import { Global, Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RedisConfig } from '@/config/redis.config';
-import { UserEmailNotExists } from '@common/user-email-not-exists.validation';
+import { UserEmailNotExists } from '@common/validations/user-email-not-exists.validation';
 import { LoggerModule } from 'nestjs-pino';
+import { AccountExists } from '@common/validations/account-exists.validation';
 
 @Global()
 @Module({
@@ -29,12 +30,13 @@ import { LoggerModule } from 'nestjs-pino';
     ScheduleModule.forRoot(),
     LoggerModule,
   ],
-  providers: [UserEmailNotExists],
+  providers: [UserEmailNotExists, AccountExists],
   exports: [
     PrismaModule,
     AuthModule,
     MailModule,
     UserEmailNotExists,
+    AccountExists,
     LoggerModule,
   ],
 })

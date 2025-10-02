@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import { setCacheHeaders, setCORSHeaders } from '@/utils';
-import { AppApiResponse } from '@common/api-response.dto';
+import { AppApiResponse } from '@common/dto/api-response.dto';
 
 const statusCodeMessages: Record<string, string> = {
   200: 'Success',

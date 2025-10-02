@@ -39,7 +39,7 @@ import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 import { StopImpersonationDto } from './dto/stop-impersonation.dto';
 import { CaslAbilityGuard } from '@/casl/casl-ability.guard';
 import { CheckAbility } from '@/casl/casl.decorator';
-import { ApiResponseDto } from '@common/dto/api-response.dto';
+import { CustomApiResponse } from '@common/custom-api-response.decorator';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -47,7 +47,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  @ApiResponseDto({ type: UserEntity, status: HttpStatus.CREATED })
+  @CustomApiResponse({ type: UserEntity, status: HttpStatus.CREATED })
   @ApiBadRequestResponse({ type: ValidationErrorEntity })
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   async signup(
@@ -61,7 +61,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @ApiResponseDto({ type: UserEntity })
+  @CustomApiResponse({ type: UserEntity })
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   @ApiBadRequestResponse({ type: ValidationErrorEntity })
   @ApiCookieAuth()
@@ -79,7 +79,7 @@ export class AuthController {
     action: 'impersonate',
     subject: 'User',
   })
-  @ApiResponseDto({ type: UserEntity })
+  @CustomApiResponse({ type: UserEntity })
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   @ApiForbiddenResponse({ type: ResponseErrorEntity })
   @ApiBearerAuth()
@@ -103,7 +103,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('stop-impersonation')
-  @ApiResponseDto({ type: UserEntity })
+  @CustomApiResponse({ type: UserEntity })
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   async stopImpersonation(
     @CurrentUser() user: UserEntity,
@@ -120,7 +120,7 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @ApiBearerAuth()
   @Post('refresh-token')
-  @ApiResponseDto({ type: UserEntity })
+  @CustomApiResponse({ type: UserEntity })
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   async refreshToken(
     @CurrentUser() user: UserEntity,
@@ -132,7 +132,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiResponseDto({ type: UserEntity })
+  @CustomApiResponse({ type: UserEntity })
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   @Get('profile')
   async getProfile(@CurrentUser() user: UserEntity) {
@@ -142,7 +142,7 @@ export class AuthController {
   @Get('abilities')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiResponseDto()
+  @CustomApiResponse()
   async getUserAbilities(@CurrentUser() user: UserEntity) {
     const result = await this.authService.getUserAbilities(user);
     return result ? result.rules : [];
@@ -152,7 +152,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
-  @ApiResponseDto({ status: HttpStatus.NO_CONTENT })
+  @CustomApiResponse({ status: HttpStatus.NO_CONTENT })
   async logout(
     @CurrentUser() user: UserEntity,
     @Res({ passthrough: true }) response: Response,
@@ -161,7 +161,7 @@ export class AuthController {
   }
 
   @Put('confirm-account')
-  @ApiResponseDto()
+  @CustomApiResponse()
   @HttpCode(HttpStatus.OK)
   async confirmAccount(@Body() confirmEmailDto: ConfirmEmailDto) {
     return new SimpleMessageEntity(
@@ -170,7 +170,7 @@ export class AuthController {
   }
 
   @Put('forgot-password')
-  @ApiResponseDto()
+  @CustomApiResponse()
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return new SimpleMessageEntity(
@@ -179,7 +179,7 @@ export class AuthController {
   }
 
   @Put('reset-password')
-  @ApiResponseDto()
+  @CustomApiResponse()
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return new SimpleMessageEntity(
       await this.authService.completePasswordReset(resetPasswordDto),
@@ -190,7 +190,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({ type: ResponseErrorEntity })
   @Get('resend-confirm-email')
-  @ApiResponseDto()
+  @CustomApiResponse()
   async resendConfirmEmail(@CurrentHospitalUser() user: UserWithProfile) {
     return new SimpleMessageEntity(
       await this.authService.resendConfirmEmail(user, user.profile!),
@@ -198,7 +198,7 @@ export class AuthController {
   }
 
   @Get('verify-password-reset/:token')
-  @ApiResponseDto()
+  @CustomApiResponse()
   async verifyPasswordResetToken(@Param('token') token: string) {
     return new SimpleMessageEntity(
       await this.authService.verifyPasswordResetToken(token),

@@ -2,40 +2,38 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PaginationMeta {
   @ApiProperty({
-    example: 1,
-    description:
-      'Current page number (can be a number or a string, depending on pagination type)',
+    example: 30,
+    description: 'total number of items matching query',
   })
-  _page: number | string;
+  total: number;
 
   @ApiProperty({
-    example: 20,
+    example: 3,
+    description: 'last page number',
+  })
+  lastPage: number;
+
+  @ApiProperty({
+    example: 2,
+    description: 'Current page number',
+  })
+  currentPage: number;
+
+  @ApiProperty({
+    example: 10,
     description: 'Number of items requested per page',
   })
-  _perPage: number;
+  perPage: number;
 
   @ApiProperty({
-    example: 15,
-    description: 'Actual number of items returned in this page',
+    example: 1,
+    description: 'Previous page number. Value will be null if at first page',
   })
-  _realPerPage: number;
+  prev: number | null;
 
   @ApiProperty({
-    example: true,
-    description: 'Indicates if there are more items after this page',
+    example: 3,
+    description: 'Next page number. Value will be null if at last page',
   })
-  _hasMore: boolean;
-
-  @ApiProperty({
-    example: { createdAt: -1 },
-    description:
-      'Sorting order applied to the query, as a key-value pair of field and direction',
-  })
-  _sort: Record<string, number>;
-
-  @ApiProperty({
-    example: 15,
-    description: 'Number of items in the current page',
-  })
-  _pageItemsCount: number;
+  next: number | null;
 }

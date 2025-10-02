@@ -17,8 +17,8 @@ import { LoggerModule } from '@common/logger.module';
     LoggerModule,
     CommonModule,
     UsersModule,
-    TransactionsModule,
     AccountsModule,
+    TransactionsModule,
   ],
   providers: [
     {

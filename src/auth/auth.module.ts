@@ -9,6 +9,7 @@ import { CaslModule } from '@/casl/casl.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { AccountsModule } from '@/accounts/accounts.module';
 
 @Module({
   controllers: [AuthController],
@@ -21,6 +22,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     }),
     UsersModule,
     CaslModule,
+    AccountsModule,
   ],
   exports: [AuthService, JwtStrategy],
 })
