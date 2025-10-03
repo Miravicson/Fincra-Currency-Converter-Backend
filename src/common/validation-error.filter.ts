@@ -18,7 +18,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     if (Object.keys(validationMessages).length > 0) {
       message = validationMessages[Object.keys(validationMessages)[0]][0];
     }
-    setCORSHeaders(response);
+    // setCORSHeaders(response);
     const apiResponse = {
       status: false,
       message: message || exception.message,

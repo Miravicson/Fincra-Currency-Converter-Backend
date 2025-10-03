@@ -23,14 +23,14 @@ export class SignupDto {
   password: string;
 
   @IsString()
-  @ApiProperty({ example: 'Sean' })
+  @ApiProperty({ example: 'Sean', required: false })
   @IsString()
   @MaxLength(255)
   @IsOptional()
   firstName?: string;
 
   @IsString()
-  @ApiProperty({ example: 'King' })
+  @ApiProperty({ example: 'King', required: false })
   @IsString()
   @MaxLength(255)
   @IsOptional()

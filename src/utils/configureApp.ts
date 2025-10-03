@@ -123,6 +123,18 @@ export const globalUrlConfigPlug = (
         return methodKey;
       },
     });
+
+    // Remove default responses globally
+    Object.keys(document.paths).forEach((path) => {
+      Object.keys(document.paths[path]).forEach((method) => {
+        // @ts-expect-error untyped
+        const operation = document.paths[path][method];
+        if (operation.responses && operation.responses.default) {
+          delete operation.responses.default;
+        }
+      });
+    });
+
     SwaggerModule.setup(swaggerConfig.path, app, document, {
       jsonDocumentUrl: 'swagger/json',
       yamlDocumentUrl: 'swagger/yaml',

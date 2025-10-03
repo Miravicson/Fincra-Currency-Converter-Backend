@@ -11,7 +11,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { AccessTokenPayload, AuthenticatedUser, SignInResponse } from './types';
 import { UsersService } from '@/users/users.service';
 import { Prisma, User, UserProfile } from '@prisma/client';
-import { SignupDto } from './dto/signup';
+import { SignupDto } from './dto/signup.dto';
 import {
   dateFromUnitTime,
   genTokenAndHash,

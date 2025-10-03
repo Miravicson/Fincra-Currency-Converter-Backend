@@ -9,7 +9,7 @@ import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
-import { setCacheHeaders, setCORSHeaders } from '@/utils';
+import { setCacheHeaders } from '@/utils';
 import { AppApiResponse } from '@common/dto/api-response.dto';
 
 const statusCodeMessages: Record<string, string> = {
@@ -39,7 +39,6 @@ export class ResponseInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const statusCode: number = response.statusCode;
 
-    setCORSHeaders(response);
     setCacheHeaders(response);
 
     const message =

@@ -31,16 +31,16 @@ export class TransactionEntity
   @ApiProperty({
     enum: $Enums.TransactionStatus,
     enumName: 'TransactionStatus',
-    required: false,
+    required: true,
   })
   status: $Enums.TransactionStatus;
 
-  @Exclude()
-  @ApiHideProperty()
+  // @Exclude()
+  // @ApiHideProperty()
   createdAt: Transaction['createdAt'];
 
-  @Exclude()
-  @ApiHideProperty()
+  // @Exclude()
+  // @ApiHideProperty()
   updatedAt: Transaction['updatedAt'];
 
   constructor(entity: Partial<TransactionEntity> | null) {

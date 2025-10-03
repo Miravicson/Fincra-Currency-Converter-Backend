@@ -16,6 +16,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { CreateTransaction } from '@/transactions/create-transaction.interface';
 import { AccountsService } from '@/accounts/accounts.service';
 import { ExchangeRateService } from '@common/integrations/exchange-rate/exchange-rate.service';
+import { SortOrderEnum } from '@common/constant';
 
 @Injectable()
 export class TransactionsService {
@@ -49,10 +50,10 @@ export class TransactionsService {
       perPage,
       page,
       fields,
-      sortBy,
+      sortBy = 'createdAt',
       startDate,
       endDate,
-      sortDirection,
+      sortDirection = SortOrderEnum.DESC,
       ...restDto
     } = dto;
 
@@ -60,11 +61,9 @@ export class TransactionsService {
       BasicQueryFilterWithFilter<Prisma.TransactionFindManyArgs<DefaultArgs>>
     > = {
       where: { userId: userId, ...restDto },
+      orderBy: { [sortBy]: sortDirection },
     };
 
-    if (sortBy) {
-      filter.orderBy = { [sortBy]: sortDirection };
-    }
     const paginate = createPaginator({ perPage, page });
     const paginated = await paginate<
       Transaction,

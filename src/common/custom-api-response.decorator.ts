@@ -84,24 +84,8 @@ export const CustomApiResponse = (options: CustomApiResponseOptions = {}) => {
 
     if (paginated) {
       properties.meta = {
-        description:
-          'Pagination metadata (either offset-based or cursor-based)',
-        oneOf: [
-          {
-            type: 'object',
-            required: ['offsetPagination'],
-            properties: {
-              offsetPagination: { $ref: getSchemaPath(PaginationMeta) },
-            },
-          },
-          {
-            type: 'object',
-            required: ['cursorPagination'],
-            properties: {
-              cursorPagination: { $ref: getSchemaPath(PaginationMeta) },
-            },
-          },
-        ],
+        $ref: getSchemaPath(PaginationMeta),
+        description: 'Pagination metadata',
       };
     }
   }
@@ -147,4 +131,3 @@ export const CustomApiResponse = (options: CustomApiResponseOptions = {}) => {
 
   return applyDecorators(...decorators);
 };
-

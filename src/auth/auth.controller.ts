@@ -23,7 +23,7 @@ import { LoginDto } from './dto/login.dto';
 import { CurrentHospitalUser } from '@common/current-hospital-user.dectorator';
 import { UserWithProfile } from '@/users/types';
 import { UserEntity } from '@/users/entities/user.entity';
-import { SignupDto } from './dto/signup';
+import { SignupDto } from './dto/signup.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { SimpleMessageEntity } from '@common/entities/simple-message.entity';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -142,7 +142,7 @@ export class AuthController {
   @Get('abilities')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @CustomApiResponse()
+  @CustomApiResponse({ type: String, isArray: true })
   async getUserAbilities(@CurrentUser() user: UserEntity) {
     const result = await this.authService.getUserAbilities(user);
     return result ? result.rules : [];
