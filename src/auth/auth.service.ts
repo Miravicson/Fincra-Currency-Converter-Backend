@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -36,6 +37,7 @@ import { AccountsQueue } from '@/accounts/accounts.queue';
 
 @Injectable()
 export class AuthService {
+  private logger = new Logger(AuthService.name);
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
@@ -152,6 +154,8 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user: User | null = await this.usersService.findOneByEmail(email);
+    this.logger.log(`User`, user);
+    this.logger.log(`Plaintext password ${password}: Email ${email}`);
     const validated = user && (await verify(user.password, password));
     if (!validated) {
       throw new UnauthorizedException(`Username or password is incorrect`);
@@ -310,7 +314,6 @@ export class AuthService {
       UserEntity.one({ ...user, profile: userProfile }),
     );
     await this.signIn({ user, response });
-
 
     await this.accountsQueue.enqueueAccountCreation(user.id);
 
