@@ -298,7 +298,7 @@ export class AuthService {
   async signup(signupDto: SignupDto, response: Response) {
     const createUserDto: CreateUserDto = {
       email: signupDto.email,
-      password: await hashPassWord(signupDto.password),
+      password: signupDto.password,
     };
     const user = await this.usersService.create(createUserDto);
     const userProfile = await this.prisma.userProfile.create({
