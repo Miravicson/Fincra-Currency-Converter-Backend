@@ -143,19 +143,8 @@ export class AuthService {
     };
   }
 
-  async validateUserOld(email: string, password: string) {
-    const user: User | null = await this.usersService.findOneByEmail(email);
-    const validated = user && (await bcrypt.compare(password, user.password));
-    if (!validated) {
-      throw new UnauthorizedException(`Username or password is incorrect`);
-    }
-    return await this.getProfile(user.id);
-  }
-
   async validateUser(email: string, password: string) {
     const user: User | null = await this.usersService.findOneByEmail(email);
-    this.logger.log(`User`, user);
-    this.logger.log(`Plaintext password ${password}: Email ${email}`);
     const validated = user && (await verify(user.password, password));
     if (!validated) {
       throw new UnauthorizedException(`Username or password is incorrect`);
