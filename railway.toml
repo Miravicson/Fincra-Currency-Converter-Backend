@@ -1,0 +1,8 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "/railway.Dockerfile"
+
+[deploy]
+preDeployCommand = ["pnpm prisma migrate deploy && pnpm prisma db seed"]
+restartPolicyType = "ALWAYS"
+restartPolicyMaxRetries = 3

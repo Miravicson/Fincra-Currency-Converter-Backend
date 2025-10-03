@@ -3,6 +3,7 @@ services:
   postgres:
     profiles:
       - backing_service
+      - backend-prod
     image: postgres:13.5
     container_name: bloomers_backend_db
     restart: always
@@ -17,9 +18,10 @@ services:
       - '5432:5432'
 
   redis:
-    container_name: bloomers_redis
     profiles:
       - backing_service
+      - backend-prod
+    container_name: bloomers_redis
     image: redis:latest
     restart: always
     ports:
@@ -30,6 +32,7 @@ services:
   mailhog:
     profiles:
       - backing_service
+      - backend-prod
     image: mailhog/mailhog:latest
     platform: linux/amd64
     container_name: bloomers_mailhog
@@ -66,6 +69,26 @@ services:
              pnpm prisma:generate &&
              pnpm prisma:seed:dev &&
              pnpm nest start --watch"
+    depends_on:
+      - mailhog
+      - postgres
+      - redis
+
+  backend-prod:
+    profiles:
+      - backend-prod
+    build:
+      dockerfile: ./railway.Dockerfile
+    container_name: bloomers_backend_prod
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      REDIS_HOST: redis
+      EMAIL_HOST: mailhog
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/bloomers-backend-new
+    env_file:
+      - ./development.env
     depends_on:
       - mailhog
       - postgres
