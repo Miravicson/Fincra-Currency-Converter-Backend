@@ -370,7 +370,7 @@ export class AuthService {
       secure,
       maxAge: normalizedMaxAge,
       path: '/',
-      sameSite: 'lax',
+      sameSite: 'none',
     };
     response.cookie(cookieKey, token, cookieOptions);
   }
