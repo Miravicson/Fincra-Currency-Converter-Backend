@@ -370,7 +370,7 @@ export class AuthService {
       secure,
       maxAge: normalizedMaxAge,
       path: '/',
-      sameSite: 'strict', // need to specify this in order to work in chrome
+      sameSite: 'lax',
     };
     response.cookie(cookieKey, token, cookieOptions);
   }
