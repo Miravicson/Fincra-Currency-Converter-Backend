@@ -364,10 +364,9 @@ export class AuthService {
     maxAge?: number;
   }): void {
     const normalizedMaxAge = maxAge != null ? maxAge : ms(expiresIn);
-    const secure = this.appConfig.environment === 'production';
     const cookieOptions: CookieOptions = {
       httpOnly: true,
-      secure,
+      secure: true,
       maxAge: normalizedMaxAge,
       path: '/',
       sameSite: 'none',
